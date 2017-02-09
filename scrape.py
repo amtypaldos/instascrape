@@ -76,7 +76,10 @@ def whatever(last_link):
                 )
                 # Get inner text
                 inner_text = driver.execute_script("return arguments[0].innerText;", bio)
+                email_match = inner_text
+                match = re.findall(r'[\w\.-]+@[\w\.-]+', email_match)
                 print(inner_text)
+                print('emails:', match)
             except TimeoutException:
                 print("No bio")
 
