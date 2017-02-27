@@ -1,6 +1,6 @@
 import os
 import sys
-import getopt
+from optparse import OptionParser
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,12 +10,33 @@ from selenium.common.exceptions import TimeoutException
 from time import sleep
 import re
 
+
+# cli args
+parser = OptionParser()
+parser.add_option("-u", "--username", dest="username", help="Twitter Username")
+parser.add_option("-p", "--password", dest="pw", help="Twitter Password")
+parser.add_option("-t", "--hashtag", dest="hashtag", help="Hashtag you want to scrape", metavar="'#hashtag'")
+(options, args) = parser.parse_args()
+
+# all options are required, check to make sure
+if options.username is None:
+  print("'-u' option required \n")
+  parser.print_help()
+  exit(1)
+elif options.pw is None:
+  print("'-p' option required \m")
+  parser.print_help()
+  exit(1)
+elif options.hashtag is None:
+  print("'-t' option required \n")
+  parser.print_help()
+  exit(1)
+
+
 # chromedriver = "/Users/eric/instascrape/chromedriver"
 driver = webdriver.Chrome()
 # os.environ['webdriver.chrome.driver'] = chromedriver
 # driver = webdriver.Chrome(chromedriver)
-
-
 
 def scrape(username,password,hashtag):
 
@@ -95,29 +116,7 @@ def whatever(last_link):
     # Call self
     whatever(current_pointer)
 
-# cli args
-def main(argv):
-   username = ''
-   pw = ''
-   hashtag = ''
-   try:
-      opts, args = getopt.getopt(argv,"u:p:t:",["username=","pw=","hashtag="])
-   except getopt.GetoptError:
-      print('scrape.py -u <username> -p <password> -t <hastag>')
-      sys.exit(2)
-   for opt, arg in opts:
-      if opt == '-h' or opt == '--help':
-         print('scrape.py -u <username> -p <password> -t <hastag>')
-         sys.exit()
-      elif opt in ("-u", "--username"):
-         username = arg
-      elif opt in ("-p", "--password"):
-         pw = arg
-      elif opt in ("-t", '--hashtag'):
-         hashtag = arg
 
-   scrape(username,pw,hashtag)
-
-if __name__ == "__main__":
-   main(sys.argv[1:])
+# call scrape to start scraping!
+scrape(options.username,options.pw,options.hashtag)
 whatever(0)
